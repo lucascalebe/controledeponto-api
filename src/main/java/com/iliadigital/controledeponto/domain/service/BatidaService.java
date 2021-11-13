@@ -1,5 +1,9 @@
 package com.iliadigital.controledeponto.domain.service;
 
+import com.iliadigital.controledeponto.domain.exception.FimDeSemanaNotAllowedException;
+import com.iliadigital.controledeponto.domain.exception.HorarioDeAlmocoException;
+import com.iliadigital.controledeponto.domain.exception.MaximoDeHorariosPorDiaException;
+import com.iliadigital.controledeponto.domain.exception.NegocioException;
 import com.iliadigital.controledeponto.domain.model.Momento;
 import com.iliadigital.controledeponto.domain.repository.MomentoRepository;
 import com.iliadigital.controledeponto.utils.DateHelper;
@@ -20,9 +24,9 @@ public class BatidaService {
 
 		if (momento == null || momento.getDataHora() == null) throw new NullPointerException("Data hora não pode ser nulo");
 		verificarHoraAtualMaiorQueAnterior(momento);
-		if (ehFimDeSemana(momento)) throw new IllegalArgumentException("Não é permitido registrar ponto em finais de semana.");
+		if (ehFimDeSemana(momento)) throw new FimDeSemanaNotAllowedException("Não é permitido registrar ponto em finais de semana.");
 		validaHoraAlmoco(momento);
-		if (bateuMaisDe4Vezes(momento)) throw new IllegalArgumentException("Apenas 4 horários podem ser registrados por dia.");
+		if (bateuMaisDe4Vezes(momento)) throw new MaximoDeHorariosPorDiaException("Podem ser registrados apenas 4 horários por dia.");
 
 		return momentoRepository.save(momento);
 	}
@@ -39,7 +43,7 @@ public class BatidaService {
 			long minutosAlmoco = Duration.between(batidasDoDia.get(1).getDataHora(),momento.getDataHora())
 					.toMinutes();
 
-			if (minutosAlmoco < 60) throw new IllegalArgumentException("É necessário no mínimo uma hora de almoço");
+			if (minutosAlmoco < 60) throw new HorarioDeAlmocoException("É necessário no mínimo uma hora de almoço");
 		}
 	}
 
@@ -49,7 +53,10 @@ public class BatidaService {
 		if (batidasDoDia.size() > 0) {
 			batidasDoDia.forEach(batida -> {
 				if (momento.getDataHora().isBefore(batida.getDataHora())) {
-					throw new IllegalArgumentException("Não é permitido registrar uma data/hora anterior à última inserida.");
+					throw new NegocioException("Não é permitido registrar uma data e hora anterior à última inserida.");
+				}
+				if (momento.getDataHora().isEqual(batida.getDataHora())) {
+					throw new NegocioException("Não é permitido registrar uma data e hora já registrada anteriormente.");
 				}
 			});
 		}
