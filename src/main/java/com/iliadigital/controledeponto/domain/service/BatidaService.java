@@ -1,18 +1,66 @@
 package com.iliadigital.controledeponto.domain.service;
 
+import com.iliadigital.controledeponto.domain.model.Momento;
+import com.iliadigital.controledeponto.domain.repository.MomentoRepository;
+import com.iliadigital.controledeponto.utils.DateHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.iliadigital.controledeponto.domain.model.Momento;
-import com.iliadigital.controledeponto.domain.repository.MomentoRepository;
+import java.time.DayOfWeek;
+import java.time.Duration;
+import java.util.List;
 
 @Service
 public class BatidaService {
 
 	@Autowired
 	private MomentoRepository momentoRepository;
-	
+
 	public Momento baterPonto(Momento momento) {
+
+		if (momento == null || momento.getDataHora() == null) throw new NullPointerException("Data hora não pode ser nulo");
+		verificarHoraAtualMaiorQueAnterior(momento);
+		if (ehFimDeSemana(momento)) throw new IllegalArgumentException("Não é permitido registrar ponto em finais de semana.");
+		validaHoraAlmoco(momento);
+		if (bateuMaisDe4Vezes(momento)) throw new IllegalArgumentException("Apenas 4 horários podem ser registrados por dia.");
+
 		return momentoRepository.save(momento);
+	}
+
+	private boolean ehFimDeSemana(Momento momento) {
+		DayOfWeek diaDaSemana = momento.getDataHora().getDayOfWeek();
+		return List.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(diaDaSemana);
+	}
+
+	private void validaHoraAlmoco(Momento momento) {
+		List<Momento> batidasDoDia = getBatidasDoDia(momento);
+
+		if (batidasDoDia.size() == 2) {
+			long minutosAlmoco = Duration.between(batidasDoDia.get(1).getDataHora(),momento.getDataHora())
+					.toMinutes();
+
+			if (minutosAlmoco < 60) throw new IllegalArgumentException("É necessário no mínimo uma hora de almoço");
+		}
+	}
+
+	private void verificarHoraAtualMaiorQueAnterior(Momento momento) {
+		List<Momento> batidasDoDia = getBatidasDoDia(momento);
+
+		if (batidasDoDia.size() > 0) {
+			batidasDoDia.forEach(batida -> {
+				if (momento.getDataHora().isBefore(batida.getDataHora())) {
+					throw new IllegalArgumentException("Não é permitido registrar uma data/hora anterior à última inserida.");
+				}
+			});
+		}
+	}
+
+	private boolean bateuMaisDe4Vezes(Momento momento) {
+		return getBatidasDoDia(momento).size() == 4;
+	}
+
+	private List<Momento> getBatidasDoDia(Momento momento) {
+		return momentoRepository.findAllInADay(DateHelper.firstHourOfDay(momento.getDataHora()),
+				DateHelper.lastHourOfDay(momento.getDataHora()));
 	}
 }

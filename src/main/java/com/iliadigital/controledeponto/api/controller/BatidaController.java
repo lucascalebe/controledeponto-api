@@ -19,8 +19,8 @@ public class BatidaController {
 	private BatidaService batidaService;
 	
 	@PostMapping
-	public ResponseEntity<Void> baterPonto(@RequestBody Momento momento) {
-		batidaService.baterPonto(momento);
-		return ResponseEntity.ok().build();
+	public ResponseEntity<Momento> baterPonto(@RequestBody Momento momento) {
+		Momento momentoSalvo = batidaService.baterPonto(momento);
+		return ResponseEntity.ok(momentoSalvo);
 	} 
 }
