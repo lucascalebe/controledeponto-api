@@ -1,23 +1,14 @@
 package com.iliadigital.controledeponto.api.model.input;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public class MomentoInput {
 
-	private Long id;
-	
+	@NotNull
 	private LocalDateTime dataHora;
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public LocalDateTime getDataHora() {
-		return dataHora;
+	public LocalDateTime getDataHora() {return dataHora;
 	}
 
 	public void setDataHora(LocalDateTime dataHora) {

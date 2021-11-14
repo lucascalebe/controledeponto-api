@@ -1,17 +1,17 @@
 package com.iliadigital.controledeponto.api.controller;
 
+import com.iliadigital.controledeponto.api.assembler.MomentoInputDisassembler;
+import com.iliadigital.controledeponto.api.assembler.MomentoModelAssembler;
+import com.iliadigital.controledeponto.api.model.MomentoModel;
+import com.iliadigital.controledeponto.api.model.input.MomentoInput;
+import com.iliadigital.controledeponto.domain.model.Momento;
+import com.iliadigital.controledeponto.domain.service.BatidaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.iliadigital.controledeponto.domain.model.Momento;
-import com.iliadigital.controledeponto.domain.service.BatidaService;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/batidas", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -19,11 +19,17 @@ public class BatidaController {
 
 	@Autowired
 	private BatidaService batidaService;
-	
+
+	@Autowired
+	private MomentoModelAssembler momentoModelAssembler;
+
+	@Autowired
+	private MomentoInputDisassembler momentoInputDisassembler;
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<Momento> baterPonto(@RequestBody Momento momento) {
-		Momento momentoSalvo = batidaService.baterPonto(momento);
-		return ResponseEntity.status(HttpStatus.CREATED).body(momentoSalvo);
-	} 
+	public MomentoModel baterPonto(@RequestBody @Valid MomentoInput momentoInput) {
+		Momento momento = momentoInputDisassembler.toDomain(momentoInput);
+		return momentoModelAssembler.toModel(batidaService.baterPonto(momento));
+	}
 }
