@@ -6,6 +6,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class MomentoModelAssembler {
 
@@ -14,5 +17,11 @@ public class MomentoModelAssembler {
 
     public MomentoModel toModel(Momento momento) {
         return modelMapper.map(momento,MomentoModel.class);
+    }
+
+    public List<MomentoModel> toCollectionModel(List<Momento> momentos) {
+        return momentos.stream()
+                .map(this::toModel)
+                .collect(Collectors.toList());
     }
 }

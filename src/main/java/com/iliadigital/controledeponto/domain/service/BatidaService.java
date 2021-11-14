@@ -1,5 +1,6 @@
 package com.iliadigital.controledeponto.domain.service;
 
+import com.iliadigital.controledeponto.api.model.input.DiaBatidaInput;
 import com.iliadigital.controledeponto.domain.exception.FimDeSemanaNotAllowedException;
 import com.iliadigital.controledeponto.domain.exception.HorarioDeAlmocoException;
 import com.iliadigital.controledeponto.domain.exception.MaximoDeHorariosPorDiaException;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -19,6 +21,11 @@ public class BatidaService {
 
 	@Autowired
 	private MomentoRepository momentoRepository;
+
+	public List<Momento> getBatidasDiarias(LocalDate dia) {
+		return momentoRepository.findAllInADay(dia.atStartOfDay(),
+				DateHelper.lastHourOfDay(dia.atStartOfDay()));
+	}
 
 	public Momento baterPonto(Momento momento) {
 
