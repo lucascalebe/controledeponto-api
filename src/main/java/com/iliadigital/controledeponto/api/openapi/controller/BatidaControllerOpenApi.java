@@ -4,6 +4,7 @@ import com.iliadigital.controledeponto.api.exceptionhandler.Problem;
 import com.iliadigital.controledeponto.api.model.MomentoModel;
 import com.iliadigital.controledeponto.api.model.input.MomentoInput;
 import io.swagger.annotations.*;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -15,6 +16,13 @@ public interface BatidaControllerOpenApi {
             @ApiResponse(code = 400, message = "Parâmetro de data  hora inválido", response = Problem.class)
     })
     public MomentoModel baterPonto(@ApiParam(value = "dataHora", example = "2021-11-16T08:00:00", required = true) MomentoInput momentoInput);
+
+    @ApiOperation("Busca uma batida por Id")
+    @ApiResponses({
+            @ApiResponse(code = 400, message = "Id da batida inválido", response = Problem.class),
+            @ApiResponse(code = 404, message = "Batida não encontrada", response = Problem.class)
+    })
+    public MomentoModel buscarBatidaPorId(@ApiParam(value = "Id de um momento",example = "1",required = true) Long momentoId);
 
     @ApiOperation("Lista os pontos batidos no dia")
     @ApiResponses({

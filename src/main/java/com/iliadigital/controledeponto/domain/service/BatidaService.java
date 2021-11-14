@@ -1,9 +1,6 @@
 package com.iliadigital.controledeponto.domain.service;
 
-import com.iliadigital.controledeponto.domain.exception.FimDeSemanaNotAllowedException;
-import com.iliadigital.controledeponto.domain.exception.HorarioDeAlmocoException;
-import com.iliadigital.controledeponto.domain.exception.MaximoDeHorariosPorDiaException;
-import com.iliadigital.controledeponto.domain.exception.NegocioException;
+import com.iliadigital.controledeponto.domain.exception.*;
 import com.iliadigital.controledeponto.domain.model.Momento;
 import com.iliadigital.controledeponto.domain.repository.MomentoRepository;
 import com.iliadigital.controledeponto.utils.DateHelper;
@@ -24,6 +21,10 @@ public class BatidaService {
 	public List<Momento> getBatidasDiarias(LocalDate dia) {
 		return momentoRepository.findAllInADay(dia.atStartOfDay(),
 				DateHelper.lastHourOfDay(dia.atStartOfDay()));
+	}
+
+	public Momento buscarBatidaPorIdOuFalhar(Long id) {
+		return momentoRepository.findById(id).orElseThrow(() -> new MomentoNaoEncontradoException(id));
 	}
 
 	public Momento baterPonto(Momento momento) {

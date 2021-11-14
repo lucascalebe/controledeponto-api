@@ -8,6 +8,8 @@ import com.iliadigital.controledeponto.api.openapi.controller.BatidaControllerOp
 import com.iliadigital.controledeponto.domain.exception.NegocioException;
 import com.iliadigital.controledeponto.domain.model.Momento;
 import com.iliadigital.controledeponto.domain.service.BatidaService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,6 +25,8 @@ import java.util.List;
 @RequestMapping(value = "/v1/batidas", produces = MediaType.APPLICATION_JSON_VALUE)
 public class BatidaController implements BatidaControllerOpenApi {
 
+	private static final Logger logger = LoggerFactory.getLogger(BatidaController.class);
+
 	@Autowired
 	private BatidaService batidaService;
 
@@ -35,12 +39,19 @@ public class BatidaController implements BatidaControllerOpenApi {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public MomentoModel baterPonto(@RequestBody @Valid MomentoInput momentoInput) {
+		logger.info("Batendo ponto...");
 		Momento momento = momentoInputDisassembler.toDomain(momentoInput);
 		return momentoModelAssembler.toModel(batidaService.baterPonto(momento));
 	}
 
+	@GetMapping("/{batidaId}")
+	public MomentoModel buscarBatidaPorId(@PathVariable Long batidaId) {
+		return momentoModelAssembler.toModel(batidaService.buscarBatidaPorIdOuFalhar(batidaId));
+	}
+
 	@GetMapping
 	public List<MomentoModel> buscarBatidasPorDia(@RequestParam() @NotNull String data) {
+		logger.info("Buscando batidas por dia...");
 		try {
 			LocalDate dataValida = LocalDate.parse(data);
 			List<Momento> momentos = batidaService.getBatidasDiarias(dataValida);

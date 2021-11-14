@@ -58,6 +58,11 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                         .build(),
 
                 new ResponseMessageBuilder()
+                        .code(405)
+                        .message("Método HTTP não suportado para essa requisição")
+                        .build(),
+
+                new ResponseMessageBuilder()
                         .code(500)
                         .message("Erro interno do servidor")
                         .build(),
@@ -80,6 +85,11 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                         .code(400)
                         .message("Requisição inválida (erro do cliente)")
                         .responseModel(new ModelRef("Problema"))
+                        .build(),
+
+                new ResponseMessageBuilder()
+                        .code(405)
+                        .message("Método HTTP não suportado para essa requisição")
                         .build(),
 
                 new ResponseMessageBuilder()
