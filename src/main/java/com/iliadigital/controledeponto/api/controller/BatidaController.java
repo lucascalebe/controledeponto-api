@@ -20,7 +20,7 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/batidas", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/v1/batidas", produces = MediaType.APPLICATION_JSON_VALUE)
 public class BatidaController implements BatidaControllerOpenApi {
 
 	@Autowired
