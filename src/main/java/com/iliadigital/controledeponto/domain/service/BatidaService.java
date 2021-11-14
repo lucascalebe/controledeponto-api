@@ -1,6 +1,5 @@
 package com.iliadigital.controledeponto.domain.service;
 
-import com.iliadigital.controledeponto.api.model.input.DiaBatidaInput;
 import com.iliadigital.controledeponto.domain.exception.FimDeSemanaNotAllowedException;
 import com.iliadigital.controledeponto.domain.exception.HorarioDeAlmocoException;
 import com.iliadigital.controledeponto.domain.exception.MaximoDeHorariosPorDiaException;
