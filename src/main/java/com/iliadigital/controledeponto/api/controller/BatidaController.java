@@ -4,6 +4,7 @@ import com.iliadigital.controledeponto.api.assembler.MomentoInputDisassembler;
 import com.iliadigital.controledeponto.api.assembler.MomentoModelAssembler;
 import com.iliadigital.controledeponto.api.model.MomentoModel;
 import com.iliadigital.controledeponto.api.model.input.MomentoInput;
+import com.iliadigital.controledeponto.api.openapi.controller.BatidaControllerOpenApi;
 import com.iliadigital.controledeponto.domain.exception.NegocioException;
 import com.iliadigital.controledeponto.domain.model.Momento;
 import com.iliadigital.controledeponto.domain.service.BatidaService;
@@ -20,7 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/batidas", produces = MediaType.APPLICATION_JSON_VALUE)
-public class BatidaController {
+public class BatidaController implements BatidaControllerOpenApi {
 
 	@Autowired
 	private BatidaService batidaService;
@@ -46,7 +47,7 @@ public class BatidaController {
 			return momentoModelAssembler.toCollectionModel(momentos);
 		}
 		catch (DateTimeParseException e) {
-			throw new NegocioException("Parâmetro de data inválido, favor informar data no formato: YY-MM-DD");
+			throw new NegocioException("Parâmetro de data inválido, favor informar data no formato: YYYY-MM-DD");
 		}
 	}
 }
