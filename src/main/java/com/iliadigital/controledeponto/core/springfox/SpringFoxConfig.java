@@ -2,10 +2,12 @@ package com.iliadigital.controledeponto.core.springfox;
 
 import com.fasterxml.classmate.TypeResolver;
 import com.iliadigital.controledeponto.api.exceptionhandler.Problem;
+import com.iliadigital.controledeponto.api.openapi.model.LinksModelOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
+import org.springframework.hateoas.Links;
 import org.springframework.hateoas.client.LinkDiscoverer;
 import org.springframework.hateoas.client.LinkDiscoverers;
 import org.springframework.hateoas.mediatype.collectionjson.CollectionJsonLinkDiscoverer;
@@ -60,6 +62,7 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .ignoredParameterTypes(
                         ServletWebRequest.class,
                         Resource.class)
+                .directModelSubstitute(Links.class, LinksModelOpenApi.class)
                 .apiInfo(apiInfo())
                 .tags(new Tag("Batidas", "Gerencia as batidas"));
     }
