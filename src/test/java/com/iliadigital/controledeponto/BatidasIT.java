@@ -19,7 +19,9 @@ import com.iliadigital.controledeponto.util.DatabaseCleaner;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("/application-test.properties")
@@ -38,8 +40,13 @@ public class BatidasIT {
     private MomentoRepository momentoRepository;
 
     int momentosInseridos;
+    private final String jsonBatidaCorreta = ResourceUtils.lerFileEConverterToString("/json/correto/batida-correta.json");
+    private final String jsonBatidaIncorreta = ResourceUtils.lerFileEConverterToString("/json/incorreto/batida-incorreta.json");
+    private final String jsonBatidaIncorretaFds = ResourceUtils.lerFileEConverterToString("/json/incorreto/batida-incorreta-fds.json");
 
     private static final int BATIDA_ID_INEXISTENTE = 100;
+    private static final String MENSAGEM_INCOMPREENSIVEL_PROBLEM_TITLE = "Mensagem incompreesivel";
+    private static final String ERRO_NEGOCIO_PROBLEM_TITLE = "Violação de regra de negócio";
 
     @BeforeEach
     public void setUp() {
@@ -66,7 +73,7 @@ public class BatidasIT {
     @Test
     public void deveRetornarStatus201_QuandoBaterPontoComDataHoraCorreta() {
         RestAssured.given()
-                .body("{ \"dataHora\": \"2021-11-12T08:00:00\"}")
+                .body(jsonBatidaCorreta)
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
                 .when()
@@ -106,6 +113,32 @@ public class BatidasIT {
                 .get("/{batidaId}")
                 .then()
                 .statusCode(404);
+    }
+
+    @Test
+    public void deveRetornarStatus400_QuandoJSONForIncorreto() {
+        given()
+                .body(jsonBatidaIncorreta)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .when()
+                .post()
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("title", equalTo(MENSAGEM_INCOMPREENSIVEL_PROBLEM_TITLE));
+    }
+
+    @Test
+    public void deveRetornarStatus403_QuandoForFimDeSemana() {
+        given()
+                .body(jsonBatidaIncorretaFds)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .when()
+                .post()
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value())
+                .body("title", equalTo(ERRO_NEGOCIO_PROBLEM_TITLE));
     }
 
     private void prepararDados() {
