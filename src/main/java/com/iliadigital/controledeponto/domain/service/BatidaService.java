@@ -50,7 +50,7 @@ public class BatidaService {
 			long minutosAlmoco = Duration.between(batidasDoDia.get(1).getDataHora(),momento.getDataHora())
 					.toMinutes();
 
-			if (minutosAlmoco < 60) throw new HorarioDeAlmocoException("É necessário no mínimo uma hora de almoço");
+			if (minutosAlmoco < 60) throw new HorarioDeAlmocoException("É necessário no mínimo uma hora de almoço.");
 		}
 	}
 
@@ -63,7 +63,7 @@ public class BatidaService {
 					throw new NegocioException("Não é permitido registrar uma data e hora anterior à última inserida.");
 				}
 				if (momento.getDataHora().isEqual(batida.getDataHora())) {
-					throw new NegocioException("Não é permitido registrar uma data e hora já registrada anteriormente.");
+					throw new HorarioJaRegistradoException("Não é permitido registrar uma data e hora já registrada anteriormente.");
 				}
 			});
 		}

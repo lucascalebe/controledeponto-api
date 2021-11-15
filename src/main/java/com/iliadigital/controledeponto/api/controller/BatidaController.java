@@ -47,6 +47,7 @@ public class BatidaController implements BatidaControllerOpenApi {
 
 	@GetMapping("/{batidaId}")
 	public MomentoModel buscarBatidaPorId(@PathVariable Long batidaId) {
+		logger.info("Buscando batida por id...");
 		return momentoModelAssembler.toModel(batidaService.buscarBatidaPorIdOuFalhar(batidaId));
 	}
 

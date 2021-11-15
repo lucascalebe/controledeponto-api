@@ -1,10 +1,10 @@
 package com.iliadigital.controledeponto.domain.exception;
 
-public class FimDeSemanaNotAllowedException extends ViolacaoDeRegraException {
+public class ViolacaoDeRegraException extends NegocioException {
 
     private static final long serialVersionUID = 1L;
 
-    public FimDeSemanaNotAllowedException(String mensagem) {
+    public ViolacaoDeRegraException(String mensagem) {
         super(mensagem);
     }
 }

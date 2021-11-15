@@ -11,7 +11,9 @@ public interface BatidaControllerOpenApi {
 
     @ApiOperation("bate um ponto")
     @ApiResponses({
-            @ApiResponse(code = 400, message = "Parâmetro de data  hora inválido", response = Problem.class)
+            @ApiResponse(code = 400, message = "Parâmetro de data  hora inválido", response = Problem.class),
+            @ApiResponse(code = 409, message = "Não é permitido registrar uma data e hora já registrada anteriormente."),
+            @ApiResponse(code = 403, message = "Violação de regra de negócio.")
     })
     public MomentoModel baterPonto(@ApiParam(value = "dataHora", example = "2021-11-16T08:00:00", required = true) MomentoInput momentoInput);
 
@@ -27,7 +29,9 @@ public interface BatidaControllerOpenApi {
             @ApiResponse(code = 400, message = "Parâmetro de data inválido", response = Problem.class)
     })
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "data", value = "data para busca de batidas (YYYY-MM-DD)", example = "2021-11-16", dataType = "string", required = true),
+            @ApiImplicitParam(name = "data", value = "data para busca de batidas (YYYY-MM-DD)"
+                    , example = "2021-11-16", dataType = "string", required = true),
     })
-    public CollectionModel<MomentoModel> buscarBatidasPorDia(@ApiParam(value = "data para busca de batidas diárias? (YYYY-MM-DD)", example = "2021-11-16") String data);
+    public CollectionModel<MomentoModel> buscarBatidasPorDia(@ApiParam(value = "data para busca de batidas diárias? (YYYY-MM-DD)"
+            , example = "2021-11-16") String data);
 }

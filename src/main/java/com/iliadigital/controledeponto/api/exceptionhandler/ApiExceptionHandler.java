@@ -1,6 +1,9 @@
 package com.iliadigital.controledeponto.api.exceptionhandler;
 
-import com.iliadigital.controledeponto.domain.exception.*;
+import com.iliadigital.controledeponto.domain.exception.EntidadeNaoEncontradaException;
+import com.iliadigital.controledeponto.domain.exception.HorarioJaRegistradoException;
+import com.iliadigital.controledeponto.domain.exception.NegocioException;
+import com.iliadigital.controledeponto.domain.exception.ViolacaoDeRegraException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,22 +33,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             + "o problema persistir, entre em contato com o administrador do sistema.";
 
 
-    //EXCEPTIONS PERSONALIZADAS
-
-    @ExceptionHandler(FimDeSemanaNotAllowedException.class)
-    public ResponseEntity<?> handleFimDeSemanaNotAllowed(FimDeSemanaNotAllowedException ex,
-                                                         WebRequest request) {
-
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        ProblemType problemType = ProblemType.ERRO_NEGOCIO;
-        String detail = ex.getMessage();
-
-        Problem problem = new Problem(OffsetDateTime.now(),status.value(),problemType.getUri(),problemType.getTitle(),detail);
-        problem.setUserMessage(detail);
-
-        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
-    }
-
     @Override
     protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex,
                                                                       HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -64,40 +51,40 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
 
-    @ExceptionHandler(MaximoDeHorariosPorDiaException.class)
-    public ResponseEntity<?> handleMaximoHorariosPorDia(MaximoDeHorariosPorDiaException ex,
-                                                         WebRequest request) {
-
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        ProblemType problemType = ProblemType.ERRO_NEGOCIO;
-        String detail = ex.getMessage();
-
-        Problem problem = new Problem(OffsetDateTime.now(),status.value(),problemType.getUri(),problemType.getTitle(),detail);
-        problem.setUserMessage(detail);
-
-        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
-    }
-
-    @ExceptionHandler(HorarioDeAlmocoException.class)
-    public ResponseEntity<?> handleHorarioDeAlmoco(HorarioDeAlmocoException ex,
-                                                         WebRequest request) {
-
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        ProblemType problemType = ProblemType.ERRO_NEGOCIO;
-        String detail = ex.getMessage();
-
-        Problem problem = new Problem(OffsetDateTime.now(),status.value(),problemType.getUri(),problemType.getTitle(),detail);
-        problem.setUserMessage(detail);
-
-        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
-    }
-
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
     public ResponseEntity<?> handleEntidadeNaoEncontrada(EntidadeNaoEncontradaException ex,
                                                          WebRequest request) {
 
         HttpStatus status = HttpStatus.NOT_FOUND;
         ProblemType problemType = ProblemType.RECURSO_NAO_ENCONTRADO;
+        String detail = ex.getMessage();
+
+        Problem problem = new Problem(OffsetDateTime.now(),status.value(),problemType.getUri(),problemType.getTitle(),detail);
+        problem.setUserMessage(detail);
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+    }
+
+    @ExceptionHandler(HorarioJaRegistradoException.class)
+    public ResponseEntity<?> handleHorarioJaRegistrado(HorarioJaRegistradoException ex,
+                                                         WebRequest request) {
+
+        HttpStatus status = HttpStatus.CONFLICT;
+        ProblemType problemType = ProblemType.ERRO_NEGOCIO;
+        String detail = ex.getMessage();
+
+        Problem problem = new Problem(OffsetDateTime.now(),status.value(),problemType.getUri(),problemType.getTitle(),detail);
+        problem.setUserMessage(detail);
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+    }
+
+    @ExceptionHandler(ViolacaoDeRegraException.class)
+    public ResponseEntity<?> handleViolacaoDeRegra(ViolacaoDeRegraException ex,
+                                                         WebRequest request) {
+
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        ProblemType problemType = ProblemType.ERRO_NEGOCIO;
         String detail = ex.getMessage();
 
         Problem problem = new Problem(OffsetDateTime.now(),status.value(),problemType.getUri(),problemType.getTitle(),detail);
@@ -119,7 +106,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
 
-    //EXCEPTIONS SISTEMA
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
