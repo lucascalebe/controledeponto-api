@@ -1,9 +1,12 @@
 package com.iliadigital.controledeponto;
 
 import com.iliadigital.controledeponto.domain.model.Momento;
+import com.iliadigital.controledeponto.domain.repository.MomentoRepository;
 import com.iliadigital.controledeponto.domain.service.BatidaService;
+import com.iliadigital.controledeponto.util.ResourceUtils;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
+import com.iliadigital.controledeponto.util.DatabaseCleaner;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,6 +31,14 @@ public class BatidasIT {
     @Autowired
     private BatidaService batidaService;
 
+    @Autowired
+    private DatabaseCleaner databaseCleaner;
+
+    @Autowired
+    private MomentoRepository momentoRepository;
+
+    int momentosInseridos;
+
     private static final int BATIDA_ID_INEXISTENTE = 100;
 
     @BeforeEach
@@ -35,6 +47,9 @@ public class BatidasIT {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         RestAssured.port = port;
         RestAssured.basePath = "v1/batidas";
+
+        databaseCleaner.clearTables();
+        prepararDados();
     }
 
     @Test
@@ -72,6 +87,17 @@ public class BatidasIT {
     }
 
     @Test
+    public void deveConterNMomenotsInseridos_QuandoConsultarBatidas() {
+        RestAssured.given()
+                .queryParam("data", "2021-01-10")
+                .accept(ContentType.JSON)
+                .when()
+                .get()
+                .then()
+                .body("content", Matchers.hasSize(momentosInseridos));
+    }
+
+    @Test
     public void deveRetornarStatus404_QuandoConsultarBatidaInexistente() {
         RestAssured.given()
                 .pathParam("batidaId", BATIDA_ID_INEXISTENTE)
@@ -80,5 +106,25 @@ public class BatidasIT {
                 .get("/{batidaId}")
                 .then()
                 .statusCode(404);
+    }
+
+    private void prepararDados() {
+        Momento momento1 = new Momento();
+        momento1.setDataHora(LocalDateTime.parse("2021-01-10T08:00:00"));
+        momentoRepository.save(momento1);
+
+        Momento momento2 = new Momento();
+        momento2.setDataHora(LocalDateTime.parse("2021-01-10T12:00:00"));
+        momentoRepository.save(momento2);
+
+        Momento momento3 = new Momento();
+        momento3.setDataHora(LocalDateTime.parse("2021-01-10T13:00:00"));
+        momentoRepository.save(momento3);
+
+        Momento momento4 = new Momento();
+        momento4.setDataHora(LocalDateTime.parse("2021-01-10T18:00:00"));
+        momentoRepository.save(momento4);
+
+        momentosInseridos = (int) momentoRepository.count();
     }
 }
