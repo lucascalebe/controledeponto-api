@@ -1,27 +1,41 @@
 package com.iliadigital.controledeponto.api.assembler;
 
+import com.iliadigital.controledeponto.api.PontoLinks;
+import com.iliadigital.controledeponto.api.controller.BatidaController;
 import com.iliadigital.controledeponto.api.model.MomentoModel;
 import com.iliadigital.controledeponto.domain.model.Momento;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Component
-public class MomentoModelAssembler {
+public class MomentoModelAssembler extends RepresentationModelAssemblerSupport<Momento, MomentoModel> {
 
     @Autowired
     private ModelMapper modelMapper;
 
-    public MomentoModel toModel(Momento momento) {
-        return modelMapper.map(momento,MomentoModel.class);
+    @Autowired
+    private PontoLinks pontoLinks;
+
+    public MomentoModelAssembler() {
+        super(BatidaController.class, MomentoModel.class);
     }
 
-    public List<MomentoModel> toCollectionModel(List<Momento> momentos) {
-        return momentos.stream()
-                .map(this::toModel)
-                .collect(Collectors.toList());
+    public MomentoModel toModel(Momento momento) {
+        MomentoModel momentoModel = createModelWithId(momento.getId(), momento);
+
+        modelMapper.map(momento, momentoModel);
+
+        momentoModel.add(pontoLinks.linkToBatidas("batidas"));
+
+        return momentoModel;
+    }
+
+    @Override
+    public CollectionModel<MomentoModel> toCollectionModel(Iterable<? extends Momento> entities) {
+        return super.toCollectionModel(entities)
+                .add(pontoLinks.linkToBatidas());
     }
 }

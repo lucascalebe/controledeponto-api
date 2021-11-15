@@ -11,6 +11,7 @@ import com.iliadigital.controledeponto.domain.service.BatidaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -50,7 +51,7 @@ public class BatidaController implements BatidaControllerOpenApi {
 	}
 
 	@GetMapping
-	public List<MomentoModel> buscarBatidasPorDia(@RequestParam() @NotNull String data) {
+	public CollectionModel<MomentoModel> buscarBatidasPorDia(@RequestParam() @NotNull String data) {
 		logger.info("Buscando batidas por dia...");
 		try {
 			LocalDate dataValida = LocalDate.parse(data);

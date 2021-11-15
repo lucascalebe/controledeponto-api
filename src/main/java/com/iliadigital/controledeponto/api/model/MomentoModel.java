@@ -1,10 +1,13 @@
 package com.iliadigital.controledeponto.api.model;
 
 import io.swagger.annotations.ApiModelProperty;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.time.LocalDateTime;
 
-public class MomentoModel {
+@Relation(collectionRelation = "batidas")
+public class MomentoModel extends RepresentationModel<MomentoModel> {
 
     @ApiModelProperty(example = "1")
     private Long id;

@@ -7,15 +7,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PontoLinks {
-    
-    public Link linkToBatida(Long batidaId, String rel) {
-        return WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(BatidaController.class).buscarBatidaPorId(batidaId))
-                .withRel(rel);
-    }
-
-    public Link linkToBatida(Long batidaId) {
-        return linkToBatida(batidaId, IanaLinkRelations.SELF.value());
-    }
 
     public Link linkToBatidas(String rel) {
         TemplateVariables filtroVariables = new TemplateVariables(
@@ -26,4 +17,7 @@ public class PontoLinks {
         return new Link(UriTemplate.of(batidasUrl, filtroVariables), rel);
     }
 
+    public Link linkToBatidas() {
+        return linkToBatidas(IanaLinkRelations.SELF.value());
+    }
 }

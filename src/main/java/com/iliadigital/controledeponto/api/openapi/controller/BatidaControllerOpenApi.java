@@ -4,9 +4,7 @@ import com.iliadigital.controledeponto.api.exceptionhandler.Problem;
 import com.iliadigital.controledeponto.api.model.MomentoModel;
 import com.iliadigital.controledeponto.api.model.input.MomentoInput;
 import io.swagger.annotations.*;
-import org.springframework.web.bind.annotation.PathVariable;
-
-import java.util.List;
+import org.springframework.hateoas.CollectionModel;
 
 @Api(tags = "Batidas")
 public interface BatidaControllerOpenApi {
@@ -31,5 +29,5 @@ public interface BatidaControllerOpenApi {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "data", value = "data para busca de batidas (YYYY-MM-DD)", example = "2021-11-16", dataType = "string", required = true),
     })
-    public List<MomentoModel> buscarBatidasPorDia(@ApiParam(value = "data para busca de batidas diárias? (YYYY-MM-DD)", example = "2021-11-16") String data);
+    public CollectionModel<MomentoModel> buscarBatidasPorDia(@ApiParam(value = "data para busca de batidas diárias? (YYYY-MM-DD)", example = "2021-11-16") String data);
 }
