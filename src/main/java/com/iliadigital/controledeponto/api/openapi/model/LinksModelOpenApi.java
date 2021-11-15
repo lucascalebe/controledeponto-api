@@ -1,8 +1,9 @@
 package com.iliadigital.controledeponto.api.openapi.model;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
-@ApiModel("Links")
+@ApiModel(value = "Links")
 public class LinksModelOpenApi {
 
     private LinkModel link;
@@ -15,8 +16,12 @@ public class LinksModelOpenApi {
         this.link = link;
     }
 
-    private class LinkModel {
+    private static class LinkModel {
+
+        @ApiModelProperty(example = "self")
         private String rel;
+
+        @ApiModelProperty(example = "http://localhost:8080/v1/batidas/1")
         private String href;
 
         public String getRel() {
