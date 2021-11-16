@@ -24,6 +24,15 @@ API RESTful que faz o controle de registros de ponto de um funcionário.
 - Postman
 - Docker
 
+### Caso ocorra problema para subir o Docker em Windows:
+- Clone com: git clone https://github.com/lucascalebe/controledeponto-api.git  --config core.autocrlf=input
+
+### subir aplicação via DOCKER :point_down:
+
+- Iniciar docker no PC
+- no diretório do projeto clonado -> ./mvnw package -DskipTests -Pdocker
+- após o package -> docker-compose up
+
 ### Instalação da aplicação :point_down:
 
 - IntelliJ/Eclipse: Importar como projeto Maven.
@@ -35,7 +44,8 @@ API RESTful que faz o controle de registros de ponto de um funcionário.
 
 ### Comando para os testes :point_down:
 
-- mvn verify (teste de integração e API)
+- ./mvnw verify (teste de integração e API)
+OBS: Com docker rodando, pois necessita do banco...
 
 ### Documentação da API :speech_balloon:
 
