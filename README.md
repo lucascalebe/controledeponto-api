@@ -6,7 +6,6 @@ API REST que faz o controle de registros de ponto de um funcionário.
 
 ### STATUS :technologist:
 - Momentos[BATIDAS] (Em progresso)
-- Relatórios (Em progresso)
 - Testes:
     - BatidaController
     - Integração
