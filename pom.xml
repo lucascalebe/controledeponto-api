@@ -114,7 +114,7 @@
 							</execution>
 						</executions>
 						<configuration>
-							<repository>ponto-api</repository>
+							<repository>lucascalebe/ponto-api</repository>
 							<buildArgs>
 								<JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
 							</buildArgs>

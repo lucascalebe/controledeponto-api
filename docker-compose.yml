@@ -1,0 +1,27 @@
+version: "3.9"
+
+networks:
+  pontoapi-network:
+    driver: bridge
+
+services:
+  ponto-mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3306:3306"
+    networks:
+      - pontoapi-network
+
+  ponto-api:
+    image: lucascalebe/ponto-api
+    command: ["/wait-for-it.sh", "ponto-mysql:3306",  "-t", "30", "--", "java", "-jar", "api.jar"]
+    environment:
+      DB_HOST: ponto-mysql
+    ports:
+      - "8080:8080"
+    networks:
+      - pontoapi-network
+    depends_on:
+      - ponto-mysql
