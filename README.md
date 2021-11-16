@@ -2,10 +2,10 @@
 
 ### Descrição do projeto :seedling:
 
-API REST que faz o controle de registros de ponto de um funcionário.
+API RESTful que faz o controle de registros de ponto de um funcionário.
 
 ### STATUS :technologist:
-- Momentos[BATIDAS] (Em progresso)
+- Momentos[BATIDAS] (Finalizado)
 - Testes:
     - BatidaController
     - Integração
